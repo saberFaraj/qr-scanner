@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>قارئ QR Code الذكي</title>
+    <title>قارئ QR Code - الإصدار المحلي</title>
     <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -47,12 +47,6 @@
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            animation: fadeIn 0.8s ease-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         
         header {
@@ -86,7 +80,7 @@
         }
         
         h1 {
-            font-size: 2rem;
+            font-size: 1.8rem;
             margin-bottom: 10px;
             background: linear-gradient(to right, #4cc9f0, #f72585);
             -webkit-background-clip: text;
@@ -101,18 +95,41 @@
             margin-bottom: 10px;
         }
         
-        .permission-note {
+        .important-note {
             background: rgba(255, 255, 255, 0.15);
-            padding: 12px;
+            padding: 15px;
             border-radius: 10px;
             margin: 15px 0;
             font-size: 0.9rem;
             border-right: 3px solid var(--warning);
+            text-align: right;
         }
         
-        .permission-note i {
+        .important-note i {
             color: var(--warning);
             margin-left: 8px;
+        }
+        
+        .solution-steps {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: right;
+        }
+        
+        .solution-steps h3 {
+            color: var(--success);
+            margin-bottom: 10px;
+        }
+        
+        .solution-steps ol {
+            padding-right: 20px;
+            line-height: 1.8;
+        }
+        
+        .solution-steps li {
+            margin-bottom: 8px;
         }
         
         .scanner-section {
@@ -158,13 +175,6 @@
             border: 3px solid var(--success);
             border-radius: 15px;
             box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7);
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(76, 201, 240, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(76, 201, 240, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(76, 201, 240, 0); }
         }
         
         .scanner-line {
@@ -183,54 +193,6 @@
             0% { top: 20%; }
             50% { top: 80%; }
             100% { top: 20%; }
-        }
-        
-        .scanner-corners {
-            position: absolute;
-            width: 220px;
-            height: 220px;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        
-        .corner {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            border: 3px solid var(--success);
-        }
-        
-        .corner-tl {
-            top: 0;
-            left: 0;
-            border-right: none;
-            border-bottom: none;
-            border-radius: 15px 0 0 0;
-        }
-        
-        .corner-tr {
-            top: 0;
-            right: 0;
-            border-left: none;
-            border-bottom: none;
-            border-radius: 0 15px 0 0;
-        }
-        
-        .corner-bl {
-            bottom: 0;
-            left: 0;
-            border-right: none;
-            border-top: none;
-            border-radius: 0 0 0 15px;
-        }
-        
-        .corner-br {
-            bottom: 0;
-            right: 0;
-            border-left: none;
-            border-top: none;
-            border-radius: 0 0 15px 0;
         }
         
         .camera-permission {
@@ -259,6 +221,7 @@
             justify-content: center;
             gap: 20px;
             margin: 25px 0;
+            flex-wrap: wrap;
         }
         
         button {
@@ -286,7 +249,7 @@
             color: white;
         }
         
-        #retry-button {
+        #upload-button {
             background: var(--warning);
             color: white;
         }
@@ -313,12 +276,6 @@
             background: rgba(255, 255, 255, 0.1);
             border-radius: 20px;
             text-align: right;
-            animation: slideIn 0.5s ease-out;
-        }
-        
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         
         .section-title {
@@ -369,70 +326,36 @@
             margin-left: 8px;
         }
         
-        .history-section {
-            margin-top: 30px;
-            width: 100%;
-            animation: slideIn 0.7s ease-out;
-        }
-        
-        #history-list {
-            list-style-type: none;
-            max-height: 250px;
-            overflow-y: auto;
-            padding: 5px;
-        }
-        
-        .history-item {
-            background: rgba(255, 255, 255, 0.1);
+        .upload-section {
+            margin-top: 20px;
             padding: 15px;
-            margin-bottom: 12px;
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 15px;
-            text-align: right;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        .history-item:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateX(-5px);
-        }
-        
-        .history-content {
-            flex: 1;
-            word-break: break-all;
-            direction: ltr;
-            text-align: left;
-            padding-left: 15px;
-        }
-        
-        .history-actions {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .history-action {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .history-action:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-        
-        .empty-history {
-            text-align: center;
+        .upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
             padding: 30px;
-            color: rgba(255, 255, 255, 0.6);
-            font-style: italic;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--success);
+            background: rgba(76, 201, 240, 0.1);
+        }
+        
+        .upload-area i {
+            font-size: 40px;
+            color: var(--success);
+            margin-bottom: 15px;
+        }
+        
+        .hidden {
+            display: none !important;
         }
         
         .error-message {
@@ -445,17 +368,6 @@
             text-align: center;
         }
         
-        .troubleshoot-list {
-            text-align: right;
-            margin: 15px 0;
-            padding-right: 20px;
-        }
-        
-        .troubleshoot-list li {
-            margin-bottom: 10px;
-            line-height: 1.5;
-        }
-        
         footer {
             margin-top: 30px;
             text-align: center;
@@ -464,68 +376,23 @@
             width: 100%;
         }
         
-        /* تخصيص شريط التمرير */
-        #history-list::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        #history-list::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-        }
-        
-        #history-list::-webkit-scrollbar-thumb {
-            background: var(--success);
-            border-radius: 10px;
-        }
-        
-        /* تصميم متجاوب */
         @media (max-width: 600px) {
             .container {
                 padding: 20px 15px;
             }
             
             h1 {
-                font-size: 1.7rem;
+                font-size: 1.5rem;
             }
             
             .scanner-container {
-                height: 280px;
-            }
-            
-            .scanner-frame {
-                width: 200px;
-                height: 200px;
-            }
-            
-            .scanner-corners {
-                width: 200px;
-                height: 200px;
+                height: 250px;
             }
             
             button {
                 padding: 12px 22px;
                 font-size: 0.9rem;
             }
-            
-            .action-buttons {
-                flex-direction: column;
-            }
-            
-            .action-button {
-                min-width: auto;
-            }
-        }
-        
-        /* تأثيرات إضافية */
-        .success-animation {
-            animation: success 0.5s ease;
-        }
-        
-        @keyframes success {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
         }
         
         .notification {
@@ -551,10 +418,6 @@
             background: var(--error);
             color: white;
         }
-        
-        .hidden {
-            display: none !important;
-        }
     </style>
 </head>
 <body>
@@ -567,14 +430,24 @@
                     <i class="fas fa-qrcode"></i>
                 </div>
                 <div>
-                    <h1>قارئ QR Code الذكي</h1>
-                    <p class="description">مسح ضوئي فوري وتفسير تلقائي لرموز QR</p>
+                    <h1>قارئ QR Code - الإصدار المحلي</h1>
+                    <p class="description">حل بديل للمسح الضوئي عندما لا تعمل الكاميرا</p>
                 </div>
             </div>
             
-            <div class="permission-note">
-                <i class="fas fa-info-circle"></i>
-                <span>للاستخدام: اضغط "بدء المسح" واسمح للمتصفح بالوصول إلى الكاميرا</span>
+            <div class="important-note">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>إذا لم تعمل الكاميرا، اتبع الخطوات أدناه أو استخدم خيار رفع الصورة</span>
+            </div>
+            
+            <div class="solution-steps">
+                <h3><i class="fas fa-lightbulb"></i> حلول مشكلة الكاميرا:</h3>
+                <ol>
+                    <li>افتح الملف باستخدام متصفح Chrome أو Firefox</li>
+                    <li>اضغط على "بدء المسح" وعندما يطلب الإذن، اختر "السماح"</li>
+                    <li>إذا لم تظهر نافذة طلب الإذن، ابحث في شريط العنوان عن أيقونة الكاميرا وانقر عليها</li>
+                    <li>إذا لم تنجح أي من الحلول، استخدم خيار "رفع صورة" بدلاً من ذلك</li>
+                </ol>
             </div>
         </header>
         
@@ -583,18 +456,13 @@
                 <div id="reader"></div>
                 <div class="scanner-overlay">
                     <div class="scanner-frame"></div>
-                    <div class="scanner-corners">
-                        <div class="corner corner-tl"></div>
-                        <div class="corner corner-tr"></div>
-                        <div class="corner corner-bl"></div>
-                        <div class="corner corner-br"></div>
-                    </div>
                     <div class="scanner-line"></div>
                 </div>
                 
-                <div id="camera-permission-prompt" class="camera-permission hidden">
+                <div id="camera-permission-prompt" class="camera-permission">
                     <i class="fas fa-camera camera-icon"></i>
-                    <p class="permission-text">يحتاج التطبيق إلى إذن للوصول إلى الكاميرا. اضغط على "بدء المسح" واسمح للمتصفح باستخدام الكاميرا.</p>
+                    <p class="permission-text">لتفعيل الكاميرا، اضغط على "بدء المسح" واسمح للمتصفح باستخدام الكاميرا</p>
+                    <p class="permission-text">إذا لم تعمل الكاميرا، يمكنك استخدام خيار "رفع صورة QR Code" أدناه</p>
                 </div>
             </div>
             
@@ -607,25 +475,23 @@
                     <i class="fas fa-stop"></i>
                     <span>إيقاف المسح</span>
                 </button>
-                <button id="retry-button" class="hidden">
-                    <i class="fas fa-redo"></i>
-                    <span>إعادة المحاولة</span>
+                <button id="upload-button">
+                    <i class="fas fa-upload"></i>
+                    <span>رفع صورة QR</span>
                 </button>
             </div>
             
-            <div id="troubleshoot-section" class="hidden">
-                <div class="error-message">
-                    <h3><i class="fas fa-exclamation-triangle"></i> لم تعمل الكاميرا؟</h3>
-                    <p>جرب هذه الحلول:</p>
+            <div id="upload-section" class="upload-section hidden">
+                <div class="section-title">
+                    <i class="fas fa-file-upload"></i>
+                    <span>رفع صورة تحتوي على QR Code</span>
                 </div>
-                
-                <ul class="troubleshoot-list">
-                    <li>تأكد من منح الإذن للمتصفح باستخدام الكاميرا</li>
-                    <li>جرب استخدام متصفح مختلف (Chrome, Firefox)</li>
-                    <li>تأكد من أن الموقع يستخدم بروتوكول HTTPS</li>
-                    <li>أعد تحميل الصفحة وحاول مرة أخرى</li>
-                    <li>تأكد من أن الكاميرا لا تستخدمها تطبيقات أخرى</li>
-                </ul>
+                <div class="upload-area" id="upload-area">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>انقر هنا لرفع صورة QR Code أو اسحب وأفلت الصورة هنا</p>
+                    <p style="font-size: 0.8rem; margin-top: 10px;">يدعم الصور من نوع JPG, PNG, GIF</p>
+                </div>
+                <input type="file" id="file-input" accept="image/*" class="hidden">
             </div>
         </div>
         
@@ -634,7 +500,7 @@
                 <i class="fas fa-qrcode"></i>
                 <span>نتيجة المسح</span>
             </div>
-            <div id="result">لم يتم مسح أي رمز بعد. سيتم عرض النتائج هنا تلقائيًا.</div>
+            <div id="result">لم يتم مسح أي رمز بعد. النتائج ستظهر هنا.</div>
             <div class="action-buttons">
                 <button class="action-button" id="copy-button" style="display: none;">
                     <i class="fas fa-copy"></i>
@@ -644,74 +510,39 @@
                     <i class="fas fa-external-link-alt"></i>
                     فتح الرابط
                 </button>
-                <button class="action-button" id="share-button" style="display: none;">
-                    <i class="fas fa-share-alt"></i>
-                    مشاركة
-                </button>
             </div>
-        </div>
-        
-        <div class="history-section">
-            <div class="section-title">
-                <i class="fas fa-history"></i>
-                <span>سجل المسح</span>
-            </div>
-            <ul id="history-list">
-                <li class="empty-history">لا توجد عمليات مسح سابقة</li>
-            </ul>
         </div>
     </div>
     
     <footer>
-        <p>تم التطوير باستخدام مكتبة Html5Qrcode | QR Code Scanner Pro</p>
+        <p>تم التطوير باستخدام مكتبة Html5Qrcode | الإصدار المحلي الآمن</p>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const startButton = document.getElementById('start-button');
             const stopButton = document.getElementById('stop-button');
-            const retryButton = document.getElementById('retry-button');
+            const uploadButton = document.getElementById('upload-button');
             const resultDiv = document.getElementById('result');
             const copyButton = document.getElementById('copy-button');
             const openButton = document.getElementById('open-button');
-            const shareButton = document.getElementById('share-button');
-            const historyList = document.getElementById('history-list');
             const notification = document.getElementById('notification');
             const cameraPermissionPrompt = document.getElementById('camera-permission-prompt');
-            const troubleshootSection = document.getElementById('troubleshoot-section');
+            const uploadSection = document.getElementById('upload-section');
+            const uploadArea = document.getElementById('upload-area');
+            const fileInput = document.getElementById('file-input');
             
             let html5QrcodeScanner;
             let isScanning = false;
-            let scanHistory = JSON.parse(localStorage.getItem('qrScanHistory')) || [];
-            let autoOpenEnabled = true;
-            let hasCameraPermission = false;
-            
-            // عرض سجل المسح
-            renderHistory();
-            
-            // التحقق من دعم الكاميرا
-            checkCameraSupport();
             
             // تهيئة الماسح الضوئي
             function initScanner() {
                 html5QrcodeScanner = new Html5Qrcode("reader");
             }
             
-            // التحقق من دعم الكاميرا
-            function checkCameraSupport() {
-                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                    showError("المتصفح لا يدعم الوصول إلى الكاميرا. جرب استخدام متصفح حديث مثل Chrome أو Firefox.");
-                    startButton.disabled = true;
-                    return false;
-                }
-                return true;
-            }
-            
-            // بدء المسح
+            // بدء المسح بالكاميرا
             startButton.addEventListener('click', function() {
                 if (isScanning) return;
-                
-                if (!checkCameraSupport()) return;
                 
                 // إخفاء رسالة الإذن
                 cameraPermissionPrompt.classList.add('hidden');
@@ -719,30 +550,20 @@
                 // طلب إذن الكاميرا
                 Html5Qrcode.getCameras().then(cameras => {
                     if (cameras && cameras.length) {
-                        // محاولة استخدام الكاميرا الخلفية أولاً
-                        const backCamera = cameras.find(camera => 
-                            camera.label.toLowerCase().includes('back') || 
-                            camera.label.toLowerCase().includes('rear')
-                        );
-                        
-                        const cameraId = backCamera ? backCamera.id : cameras[0].id;
+                        const cameraId = cameras[0].id;
                         
                         html5QrcodeScanner.start(
                             cameraId,
                             {
                                 fps: 10,
-                                qrbox: { width: 250, height: 250 },
-                                aspectRatio: 1.0
+                                qrbox: { width: 250, height: 250 }
                             },
                             onScanSuccess,
                             onScanFailure
                         ).then(() => {
                             isScanning = true;
-                            hasCameraPermission = true;
                             startButton.disabled = true;
                             stopButton.disabled = false;
-                            retryButton.classList.add('hidden');
-                            troubleshootSection.classList.add('hidden');
                             resultDiv.textContent = "يتم المسح الآن... ضع الكود أمام الكاميرا";
                             showNotification("تم تفعيل المسح الضوئي");
                         }).catch(err => {
@@ -751,7 +572,6 @@
                         });
                     } else {
                         showError("لم يتم العثور على كاميرات في الجهاز");
-                        retryButton.classList.remove('hidden');
                     }
                 }).catch(err => {
                     console.error("فشل في الحصول على الكاميرات:", err);
@@ -774,48 +594,64 @@
                 });
             });
             
-            // إعادة المحاولة
-            retryButton.addEventListener('click', function() {
-                location.reload();
+            // تفعيل رفع الصورة
+            uploadButton.addEventListener('click', function() {
+                uploadSection.classList.toggle('hidden');
+                if (!uploadSection.classList.contains('hidden')) {
+                    showNotification("يمكنك الآن رفع صورة تحتوي على QR Code");
+                }
+            });
+            
+            // رفع الصورة
+            uploadArea.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            fileInput.addEventListener('change', function(e) {
+                if (e.target.files.length === 0) {
+                    return;
+                }
+                
+                const imageFile = e.target.files[0];
+                resultDiv.textContent = "جاري معالجة الصورة...";
+                
+                html5QrcodeScanner.scanFile(imageFile, true)
+                    .then(decodedText => {
+                        onScanSuccess(decodedText);
+                        showNotification("تم مسح الرمز بنجاح من الصورة");
+                    })
+                    .catch(err => {
+                        console.error("فشل في مسح الصورة:", err);
+                        showError("فشل في قراءة QR Code من الصورة. تأكد من أن الصورة تحتوي على رمز QR واضح.");
+                    });
             });
             
             // معالجة المسح الناجح
-            function onScanSuccess(decodedText, decodedResult) {
+            function onScanSuccess(decodedText) {
                 resultDiv.textContent = decodedText;
-                resultDiv.classList.add('success-animation');
-                
-                setTimeout(() => {
-                    resultDiv.classList.remove('success-animation');
-                }, 500);
-                
-                // إضافة إلى السجل
-                addToHistory(decodedText);
                 
                 // عرض أزرار الإجراءات
                 copyButton.style.display = 'inline-block';
-                shareButton.style.display = 'inline-block';
                 
                 // التحقق إذا كان النص رابطًا
                 if (isValidUrl(decodedText)) {
                     openButton.style.display = 'inline-block';
                     
-                    // الفتح التلقائي إذا كان مفعل
-                    if (autoOpenEnabled) {
-                        setTimeout(() => {
-                            window.open(decodedText, '_blank');
-                            showNotification("تم فتح الرابط تلقائيًا");
-                        }, 1000);
-                    }
+                    // فتح الرابط تلقائيًا
+                    setTimeout(() => {
+                        window.open(decodedText, '_blank');
+                        showNotification("تم فتح الرابط تلقائيًا");
+                    }, 1000);
                 } else {
                     openButton.style.display = 'none';
                 }
                 
-                // إيقاف المسح تلقائيًا بعد النجاح
-                setTimeout(() => {
-                    if (isScanning) {
+                // إيقاف المسح تلقائيًا بعد النجاح إذا كان يعمل
+                if (isScanning) {
+                    setTimeout(() => {
                         stopButton.click();
-                    }
-                }, 3000);
+                    }, 2000);
+                }
             }
             
             // معالجة فشل المسح
@@ -833,17 +669,13 @@
                         errorMessage += "تم رفض الإذن. يرجى السماح للمتصفح باستخدام الكاميرا.";
                     } else if (err.message.includes("NotFound")) {
                         errorMessage += "لم يتم العثور على كاميرا.";
-                    } else if (err.message.includes("NotSupported")) {
-                        errorMessage += "المتصفح لا يدعم هذه الميزة.";
                     } else {
-                        errorMessage += err.message;
+                        errorMessage += "جرب استخدام خيار رفع الصورة بدلاً من ذلك.";
                     }
                 }
                 
                 showError(errorMessage);
                 cameraPermissionPrompt.classList.remove('hidden');
-                troubleshootSection.classList.remove('hidden');
-                retryButton.classList.remove('hidden');
             }
             
             // عرض خطأ
@@ -874,85 +706,6 @@
                 showNotification("تم فتح الرابط في نافذة جديدة");
             });
             
-            // مشاركة النص
-            shareButton.addEventListener('click', function() {
-                if (navigator.share) {
-                    navigator.share({
-                        title: 'رمز QR',
-                        text: resultDiv.textContent,
-                        url: isValidUrl(resultDiv.textContent) ? resultDiv.textContent : undefined
-                    }).then(() => {
-                        showNotification("تمت المشاركة بنجاح");
-                    }).catch(err => {
-                        console.error('Error sharing:', err);
-                    });
-                } else {
-                    // Fallback for browsers that don't support Web Share API
-                    copyButton.click();
-                    showNotification("تم نسخ النص للمشاركة");
-                }
-            });
-            
-            // إضافة إلى السجل
-            function addToHistory(text) {
-                const timestamp = new Date().toLocaleString('ar-EG');
-                const type = isValidUrl(text) ? 'رابط' : 'نص';
-                
-                scanHistory.unshift({ 
-                    text, 
-                    timestamp,
-                    type
-                });
-                
-                // الاحتفاظ بآخر 10 عناصر فقط
-                if (scanHistory.length > 10) {
-                    scanHistory = scanHistory.slice(0, 10);
-                }
-                
-                // حفظ في التخزين المحلي
-                localStorage.setItem('qrScanHistory', JSON.stringify(scanHistory));
-                
-                // تحديث العرض
-                renderHistory();
-            }
-            
-            // عرض السجل
-            function renderHistory() {
-                historyList.innerHTML = '';
-                
-                if (scanHistory.length === 0) {
-                    historyList.innerHTML = '<li class="empty-history">لا توجد عمليات مسح سابقة</li>';
-                    return;
-                }
-                
-                scanHistory.forEach((item, index) => {
-                    const li = document.createElement('li');
-                    li.className = 'history-item';
-                    
-                    li.innerHTML = `
-                        <div class="history-content">
-                            <div style="font-weight: bold; margin-bottom: 5px;">${item.text}</div>
-                            <div style="font-size: 0.8rem; color: rgba(255,255,255,0.7);">
-                                ${item.timestamp} - ${item.type}
-                            </div>
-                        </div>
-                        <div class="history-actions">
-                            <button class="history-action" onclick="copyHistoryItem(${index})">
-                                <i class="fas fa-copy"></i>
-                            </button>
-                            <button class="history-action" onclick="openHistoryItem(${index})" ${item.type !== 'رابط' ? 'style="display:none;"' : ''}>
-                                <i class="fas fa-external-link-alt"></i>
-                            </button>
-                            <button class="history-action" onclick="deleteHistoryItem(${index})">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    `;
-                    
-                    historyList.appendChild(li);
-                });
-            }
-            
             // التحقق من أن النص هو رابط صالح
             function isValidUrl(string) {
                 try {
@@ -978,42 +731,6 @@
             // تهيئة الماسح عند تحميل الصفحة
             initScanner();
         });
-        
-        // دالة نسخ عنصر من السجل (يجب أن تكون عامة)
-        window.copyHistoryItem = function(index) {
-            const scanHistory = JSON.parse(localStorage.getItem('qrScanHistory')) || [];
-            if (scanHistory[index]) {
-                navigator.clipboard.writeText(scanHistory[index].text).then(() => {
-                    alert('تم نسخ النص!');
-                });
-            }
-        };
-        
-        // دالة فتح عنصر من السجل (يجب أن تكون عامة)
-        window.openHistoryItem = function(index) {
-            const scanHistory = JSON.parse(localStorage.getItem('qrScanHistory')) || [];
-            if (scanHistory[index] && window.isValidUrl(scanHistory[index].text)) {
-                window.open(scanHistory[index].text, '_blank');
-            }
-        };
-        
-        // دالة حذف عنصر من السجل (يجب أن تكون عامة)
-        window.deleteHistoryItem = function(index) {
-            let scanHistory = JSON.parse(localStorage.getItem('qrScanHistory')) || [];
-            scanHistory.splice(index, 1);
-            localStorage.setItem('qrScanHistory', JSON.stringify(scanHistory));
-            location.reload(); // إعادة تحميل الصفحة لتحديث السجل
-        };
-        
-        // إعادة تعريف isValidUrl للاستخدام العام
-        window.isValidUrl = function(string) {
-            try {
-                new URL(string);
-                return true;
-            } catch (_) {
-                return false;
-            }
-        };
     </script>
 </body>
 </html>
