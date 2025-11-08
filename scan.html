@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قارئ QR Code الذكي</title>
+    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #7209b7;
+            --success: #4cc9f0;
+            --dark: #1d1e2c;
+            --light: #f8f9fa;
+            --gradient: linear-gradient(135deg, #4361ee, #3a0ca3, #7209b7);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
+        }
+        
+        body {
+            background: var(--gradient);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        header {
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(76, 201, 240, 0.4);
+        }
+        
+        .logo-icon i {
+            font-size: 24px;
+            color: var(--dark);
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #4cc9f0, #f72585);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+        
+        .description {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .scanner-section {
+            position: relative;
+            margin: 25px 0;
+        }
+        
+        .scanner-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        #reader {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .scanner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .scanner-frame {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 220px;
+            height: 220px;
+            border: 3px solid var(--success);
+            border-radius: 15px;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(76, 201, 240, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(76, 201, 240, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(76, 201, 240, 0); }
+        }
+        
+        .scanner-line {
+            position: absolute;
+            top: 20%;
+            left: 10%;
+            width: 80%;
+            height: 3px;
+            background: var(--success);
+            border-radius: 3px;
+            animation: scan 2s infinite linear;
+            box-shadow: 0 0 10px var(--success);
+        }
+        
+        @keyframes scan {
+            0% { top: 20%; }
+            50% { top: 80%; }
+            100% { top: 20%; }
+        }
+        
+        .scanner-corners {
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .corner {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 3px solid var(--success);
+        }
+        
+        .corner-tl {
+            top: 0;
+            left: 0;
+            border-right: none;
+            border-bottom: none;
+            border-radius: 15px 0 0 0;
+        }
+        
+        .corner-tr {
+            top: 0;
+            right: 0;
+            border-left: none;
+            border-bottom: none;
+            border-radius: 0 15px 0 0;
+        }
+        
+        .corner-bl {
+            bottom: 0;
+            left: 0;
+            border-right: none;
+            border-top: none;
+            border-radius: 0 0 0 15px;
+        }
+        
+        .corner-br {
+            bottom: 0;
+            right: 0;
+            border-left: none;
+            border-top: none;
+            border-radius: 0 0 15px 0;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        #start-button {
+            background: var(--success);
+            color: var(--dark);
+        }
+        
+        #stop-button {
+            background: #f72585;
+            color: white;
+        }
+        
+        button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(2px);
+        }
+        
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .result-section {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            text-align: right;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--success);
+        }
+        
+        .section-title i {
+            font-size: 1.5rem;
+        }
+        
+        #result {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 18px;
+            border-radius: 15px;
+            word-break: break-all;
+            min-height: 80px;
+            text-align: right;
+            direction: ltr;
+            font-size: 1rem;
+            line-height: 1.6;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 18px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .action-button {
+            padding: 12px 20px;
+            background: var(--primary);
+            color: white;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .action-button i {
+            margin-left: 8px;
+        }
+        
+        .history-section {
+            margin-top: 30px;
+            width: 100%;
+            animation: slideIn 0.7s ease-out;
+        }
+        
+        #history-list {
+            list-style-type: none;
+            max-height: 250px;
+            overflow-y: auto;
+            padding: 5px;
+        }
+        
+        .history-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 15px;
+            text-align: right;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(-5px);
+        }
+        
+        .history-content {
+            flex: 1;
+            word-break: break-all;
+            direction: ltr;
+            text-align: left;
+            padding-left: 15px;
+        }
+        
+        .history-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .history-action {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .history-action:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .empty-history {
+            text-align: center;
+            padding: 30px;
+            color: rgba(255, 255, 255, 0.6);
+            font-style: italic;
+        }
+        
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            width: 100%;
+        }
+        
+        /* تخصيص شريط التمرير */
+        #history-list::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        #history-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        #history-list::-webkit-scrollbar-thumb {
+            background: var(--success);
+            border-radius: 10px;
+        }
+        
+        /* تصميم متجاوب */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            h1 {
+                font-size: 1.7rem;
+            }
+            
+            .scanner-container {
+                height: 280px;
+            }
+            
+            .scanner-frame {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .scanner-corners {
+                width: 200px;
+                height: 200px;
+            }
+            
+            button {
+                padding: 12px 22px;
+                font-size: 0.9rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .action-button {
+                min-width: auto;
+            }
+        }
+        
+        /* تأثيرات إضافية */
+        .glow {
+            text-shadow: 0 0 10px rgba(76, 201, 240, 0.7);
+        }
+        
+        .success-animation {
+            animation: success 0.5s ease;
+        }
+        
+        @keyframes success {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: var(--success);
+            color: var(--dark);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            font-weight: 600;
+            transform: translateX(150%);
+            transition: transform 0.4s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="notification" id="notification"></div>
+    
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-qrcode"></i>
+                </div>
+                <div>
+                    <h1>قارئ QR Code الذكي</h1>
+                    <p class="description">مسح ضوئي فوري وتفسير تلقائي لرموز QR</p>
+                </div>
+            </div>
+        </header>
+        
+        <div class="scanner-section">
+            <div class="scanner-container">
+                <div id="reader"></div>
+                <div class="scanner-overlay">
+                    <div class="scanner-frame"></div>
+                    <div class="scanner-corners">
+                        <div class="corner corner-tl"></div>
+                        <div class="corner corner-tr"></div>
+                        <div class="corner corner-bl"></div>
+                        <div class="corner corner-br"></div>
+                    </div>
+                    <div class="scanner-line"></div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button id="start-button">
+                    <i class="fas fa-play"></i>
+                    <span>بدء المسح</span>
+                </button>
+                <button id="stop-button" disabled>
+                    <i class="fas fa-stop"></i>
+                    <span>إيقاف المسح</span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="result-section">
+            <div class="section-title">
+                <i class="fas fa-qrcode"></i>
+                <span>نتيجة المسح</span>
+            </div>
+            <div id="result">لم يتم مسح أي رمز بعد. سيتم عرض النتائج هنا تلقائيًا.</div>
+            <div class="action-buttons">
+                <button class="action-button" id="copy-button" style="display: none;">
+                    <i class="fas fa-copy"></i>
+                    نسخ النص
+                </button>
+                <button class="action-button" id="open-button" style="display: none;">
+                    <i class="fas fa-external-link-alt"></i>
+                    فتح الرابط
+                </button>
+                <button class="action-button" id="share-button" style="display: none;">
+                    <i class="fas fa-share-alt"></i>
+                    مشاركة
+                </button>
+            </div>
+        </div>
+        
+        <div class="history-section">
+            <div class="section-title">
+                <i class="fas fa-history"></i>
+                <span>سجل المسح</span>
+            </div>
+            <ul id="history-list">
+                <li class="empty-history">لا توجد عمليات مسح سابقة</li>
+            </ul>
+        </div>
+    </div>
+    
+    <footer>
+        <p>تم التطوير باستخدام مكتبة Html5Qrcode | QR Code Scanner Pro</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const startButton = document.getElementById('start-button');
+            const stopButton = document.getElementById('stop-button');
+            const resultDiv = document.getElementById('result');
+            const copyButton = document.getElementById('copy-button');
+            const openButton = document.getElementById('open-button');
+            const shareButton = document.getElementById('share-button');
+            const historyList = document.getElementById('history-list');
+            const notification = document.getElementById('notification');
+            
+            let html5QrcodeScanner;
+            let isScanning = false;
+            let scanHistory = JSON.parse(localStorage.getItem('qrScanHistory')) || [];
+            let autoOpenEnabled = true;
+            
+            // عرض سجل المسح
+            renderHistory();
+            
+            // تهيئة الماسح الضوئي
+            function initScanner() {
+                html5QrcodeScanner = new Html5Qrcode("reader");
+            }
+            
+            // بدء المسح
+            startButton.addEventListener('click', function() {
+                if (isScanning) return;
+                
+                // طلب إذن الكاميرا
+                Html5Qrcode.getCameras().then(cameras => {
+                    if (cameras && cameras.length) {
+                        // محاولة استخدام الكاميرا الخلفية أولاً
+                        const backCamera = cameras.find(camera => 
+                            camera.label.toLowerCase().includes('back') || 
+                            camera.label.toLowerCase().includes('rear')
+                        );
+                        
+                        const cameraId = backCamera ? backCamera.id : cameras[0].id;
+                        
+                        html5QrcodeScanner.start(
+                            cameraId,
+                            {
+                                fps: 10,
+                                qrbox: { width: 250, height: 250 },
+                                aspectRatio: 1.0
+                            },
+                            onScanSuccess,
+                            onScanFailure
+                        ).then(() => {
+                            isScanning = true;
+                            startButton.disabled = true;
+                            stopButton.disabled = false;
+                            resultDiv.textContent = "يتم المسح الآن... ضع الكود أمام الكاميرا";
+                            showNotification("تم تفعيل المسح الضوئي");
+                        }).catch(err => {
+                            console.error("فشل في بدء المسح:", err);
+                            resultDiv.textContent = "فشل في تشغيل الكاميرا. يرجى التحقق من الأذونات.";
+                            showNotification("فشل في تشغيل الكاميرا", "error");
+                        });
+                    }
+                }).catch(err => {
+                    console.error("فشل في الحصول على الكاميرات:", err);
+                    resultDiv.textContent = "تعذر الوصول إلى الكاميرا. يرجى التحقق من الأذونات.";
+                    showNotification("تعذر الوصول إلى الكاميرا", "error");
+                });
+            });
+            
+            // إيقاف المسح
+            stopButton.addEventListener('click', function() {
+                if (!isScanning) return;
+                
+                html5QrcodeScanner.stop().then(() => {
+                    isScanning = false;
+                    startButton.disabled = false;
+                    stopButton.disabled = true;
+                    resultDiv.textContent = "تم إيقاف المسح";
+                    showNotification("تم إيقاف المسح الضوئي");
+                }).catch(err => {
+                    console.error("فشل في إيقاف المسح:", err);
+                });
+            });
+            
+            // معالجة المسح الناجح
+            function onScanSuccess(decodedText, decodedResult) {
+                resultDiv.textContent = decodedText;
+                resultDiv.classList.add('success-animation');
+                
+                setTimeout(() => {
+                    resultDiv.classList.remove('success-animation');
+                }, 500);
+                
+                // إضافة إلى السجل
+                addToHistory(decodedText);
+                
+                // عرض أزرار الإجراءات
+                copyButton.style.display = 'inline-block';
+                shareButton.style.display = 'inline-block';
+                
+                // التحقق إذا كان النص رابطًا
+                if (isValidUrl(decodedText)) {
+                    openButton.style.display = 'inline-block';
+                    
+                    // الفتح التلقائي إذا كان مفعل
+                    if (autoOpenEnabled) {
+                        setTimeout(() => {
+                            window.open(decodedText, '_blank');
+                            showNotification("تم فتح الرابط تلقائيًا");
+                        }, 1000);
+                    }
+                } else {
+                    openButton.style.display = 'none';
+                }
+                
+                // إيقاف المسح تلقائيًا بعد النجاح
+                setTimeout(() => {
+                    if (isScanning) {
+                        stopButton.click();
+                    }
+                }, 3000);
+            }
+            
+            // معالجة فشل المسح
+            function onScanFailure(error) {
+                // تجاهل أخطاء المسح العادية
+            }
+            
+            // نسخ النص
+            copyButton.addEventListener('click', function() {
+                navigator.clipboard.writeText(resultDiv.textContent).then(() => {
+                    const originalText = copyButton.innerHTML;
+                    copyButton.innerHTML = '<i class="fas fa-check"></i> تم النسخ!';
+                    showNotification("تم نسخ النص إلى الحافظة");
+                    setTimeout(() => {
+                        copyButton.innerHTML = originalText;
+                    }, 2000);
+                });
+            });
+            
+            // فتح الرابط
+            openButton.addEventListener('click', function() {
+                window.open(resultDiv.textContent, '_blank');
+                showNotification("تم فتح الرابط في نافذة جديدة");
+            });
+            
+            // مشاركة النص
+            shareButton.addEventListener('click', function() {
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'رمز QR',
+                        text: resultDiv.textContent,
+                        url: isValidUrl(resultDiv.textContent) ? resultDiv.textContent : undefined
+                    }).then(() => {
+                        showNotification("تمت المشاركة بنجاح");
+                    }).catch(err => {
+                        console.error('Error sharing:', err);
+                    });
+                } else {
+                    // Fallback for browsers that don't support Web Share API
+                    copyButton.click();
+                    showNotification("تم نسخ النص للمشاركة");
+                }
+            });
+            
+            // إضافة إلى السجل
+            function addToHistory(text) {
+                const timestamp = new Date().toLocaleString('ar-EG');
+                const type = isValidUrl(text) ? 'رابط' : 'نص';
+                
+                scanHistory.unshift({ 
+                    text, 
+                    timestamp,
+                    type
+                });
+                
+                // الاحتفاظ بآخر 10 عناصر فقط
+                if (scanHistory.length > 10) {
+                    scanHistory = scanHistory.slice(0, 10);
+                }
+                
+                // حفظ في التخزين المحلي
+                localStorage.setItem('qrScanHistory', JSON.stringify(scanHistory));
+                
+                // تحديث العرض
+                renderHistory();
+            }
+            
+            // عرض السجل
+            function renderHistory() {
+                historyList.innerHTML = '';
+                
+                if (scanHistory.length === 0) {
+                    historyList.innerHTML = '<li class="empty-history">لا توجد عمليات مسح سابقة</li>';
+                    return;
+                }
+                
+                scanHistory.forEach((item, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'history-item';
+                    
+                    li.innerHTML = `
+                        <div class="history-content">
+                            <div style="font-weight: bold; margin-bottom: 5px;">${item.text}</div>
+                            <div style="font-size: 0.8rem; color: rgba(255,255,255,0.7);">
+                                ${item.timestamp} - ${item.type}
+                            </div>
+                        </div>
+                        <div class="history-actions">
+                            <button class="history-action" onclick="copyHistoryItem(${index})">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <button class="history-action" onclick="openHistoryItem(${index})" ${item.type !== 'رابط' ? 'style="display:none;"' : ''}>
+                                <i class="fas fa-external-link-alt"></i>
+                            </button>
+                            <button class="history-action" onclick="deleteHistoryItem(${index})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    
+                    historyList.appendChild(li);
+                });
+            }
+            
+            // التحقق من أن النص هو رابط صالح
+            function isValidUrl(string) {
+                try {
+                    new URL(string);
+                    return true;
+                } catch (_) {
+                    return false;
+                }
+            }
+            
+            // عرض الإشعارات
+            function showNotification(message, type = 'success') {
+                notification.textContent = message;
+                notification.style.background = type === 'error' ? '#f72585' : '#4cc9f0';
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+            
+            // تهيئة الماسح عند تحميل الصفحة
+            initScanner();
+        });
+        
+        // دالة نسخ عنصر من السجل (يجب أن تكون عامة)
+        window.copyHistoryItem = function(index) {
+            const scanHistory = JSON.parse(localStorage.getItem('qrScanHistory')) || [];
+            if (scanHistory[index]) {
+                navigator.clipboard.writeText(scanHistory[index].text).then(() => {
+                    // يمكن إضافة إشعار بنجاح النسخ هنا
+                    alert('تم نسخ النص!');
+                });
+            }
+        };
+        
+        // دالة فتح عنصر من السجل (يجب أن تكون عامة)
+        window.openHistoryItem = function(index) {
+            const scanHistory = JSON.parse(localStorage.getItem('qrScanHistory')) || [];
+            if (scanHistory[index] && isValidUrl(scanHistory[index].text)) {
+                window.open(scanHistory[index].text, '_blank');
+            }
+        };
+        
+        // دالة حذف عنصر من السجل (يجب أن تكون عامة)
+        window.deleteHistoryItem = function(index) {
+            let scanHistory = JSON.parse(localStorage.getItem('qrScanHistory')) || [];
+            scanHistory.splice(index, 1);
+            localStorage.setItem('qrScanHistory', JSON.stringify(scanHistory));
+            location.reload(); // إعادة تحميل الصفحة لتحديث السجل
+        };
+        
+        // إعادة تعريف isValidUrl للاستخدام العام
+        window.isValidUrl = function(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        };
+    </script>
+</body>
+</html>
